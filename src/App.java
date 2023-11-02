@@ -7,23 +7,24 @@ public class App extends PApplet {
 
     ArrayList<PVector> particlesPos = new ArrayList<PVector>();
     ArrayList<PVector> particlesVel = new ArrayList<PVector>();
-
+    PVector buffer;
     int size = 50;
-    int startValue = 200;
+    int startValue = 3;
 
     public static void main(String[] args) {
         PApplet.main("App");
     }
 
     public void settings() {
-        size(1600, 1000);
+        size(600, 600);
     }
 
     public void setup() {
         for (int i = 0; i < startValue; i++) {
-            particlesPos.add(new PVector(random(width), random(height)));
+            particlesPos.add(new PVector(random(size/2,width-size/2), random(size/2,height-size/2)));
             particlesVel.add(new PVector(random(10) - 5, random(10) - 5));
         }
+        buffer = new PVector(0,0);
     }
 
     public void draw() {
@@ -31,11 +32,22 @@ public class App extends PApplet {
         fill(255, 0, 0);
 
         for (int i = 0; i < particlesVel.size(); i++) {
-            if (particlesPos.get(i).x >= width || particlesPos.get(i).x <= 0) {
+            if (particlesPos.get(i).x >= width-size/2 || particlesPos.get(i).x <= size/2) {
                 particlesVel.get(i).x = -particlesVel.get(i).x;
             }
-            if (particlesPos.get(i).y >= height || particlesPos.get(i).y <= 0) {
+            if (particlesPos.get(i).y >= height-size/2 || particlesPos.get(i).y <= size/2) {
                 particlesVel.get(i).y = -particlesVel.get(i).y;
+            }
+        }
+
+        for (int i = particlesVel.size() - 1; i >= 0; i--) {
+            for (int j = i - 1; j >= 0; j--) {
+                if (particlesPos.get(i).dist(particlesPos.get(j)) <= size) {
+                    buffer = particlesVel.get(i).copy();
+                    particlesVel.get(i).set(particlesVel.get(j));
+                    particlesVel.get(j).set(buffer);
+
+                }
             }
         }
 
