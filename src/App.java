@@ -7,9 +7,9 @@ public class App extends PApplet {
     ArrayList<PVector> particlesPos = new ArrayList<PVector>();
     ArrayList<PVector> particlesVel = new ArrayList<PVector>();
     PVector buffer;
-    int size = 4;
-    int startValue = 200;
-    float energyloss = 0.4f;
+    int size = 20;
+    int startValue = 50;
+    float energyloss = 1f;
     PVector afstand;
     float overlap;
 
@@ -18,7 +18,7 @@ public class App extends PApplet {
     }
 
     public void settings() {
-        size(600, 600);
+        fullScreen();
     }
 
     public void setup() {
@@ -54,17 +54,19 @@ public class App extends PApplet {
             }
         }
 
-        for (int i = particlesVel.size()-1; i >= 0; i--) {
-            for (int j = i-1; j >= 0; j--) {
- 
+        for (int i = particlesVel.size() - 1; i >= 0; i--) {
+            for (int j = i - 1; j >= 0; j--) {
+
                 afstand = particlesPos.get(i).copy().sub(particlesPos.get(j).copy());
 
                 if (afstand.mag() <= size) {
                     overlap = size - afstand.mag();
                     afstand.normalize();
-                    particlesPos.get(i).add(PVector.mult(afstand, overlap*(particlesVel.get(i).mag()/(particlesVel.get(i).mag()+particlesVel.get(j).mag()))));
-                    particlesPos.get(j).sub(PVector.mult(afstand, overlap*(particlesVel.get(j).mag()/(particlesVel.get(i).mag()+particlesVel.get(j).mag()))));
-        
+                    particlesPos.get(i).add(PVector.mult(afstand, overlap
+                            * (particlesVel.get(i).mag() / (particlesVel.get(i).mag() + particlesVel.get(j).mag()))));
+                    particlesPos.get(j).sub(PVector.mult(afstand, overlap
+                            * (particlesVel.get(j).mag() / (particlesVel.get(i).mag() + particlesVel.get(j).mag()))));
+
                     particlesVel.get(i).mult(energyloss);
                     particlesVel.get(j).mult(energyloss);
 
@@ -79,7 +81,7 @@ public class App extends PApplet {
             particlesPos.get(i).x = particlesPos.get(i).x + particlesVel.get(i).x;
             particlesPos.get(i).y = particlesPos.get(i).y + particlesVel.get(i).y;
 
-            particlesVel.get(i).y = particlesVel.get(i).y + 9.82f;
+            // particlesVel.get(i).y = particlesVel.get(i).y + 9.82f;
         }
 
         for (PVector dot : particlesPos) {
